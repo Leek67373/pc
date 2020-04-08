@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width" initial-scale="1" />
+    <title>待遇资格认证</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body id="bady">
+    <div class="pc-box">
+    <div class="pc-box_mian pc-status_mian">
+        <div class="pc-box_mian_success"></div>
+        <div class="pc-box_mian_middle">恭喜您,已完成待遇资格认证！</div>
+        <div class="pc-box_mian_button handle">完成</div>
+    </div>   
+</div>
+</body>
+
+<script type="text/javascript" src="js/jquery.min.js" charset="utf-8" ></script>
+<script>
+    // 返回上一页 
+    $('.pc-box_mian_button').on('click', function () {
+        // history.go(-2)
+        //
+        window.close()
+    })
+
+</script>
+</html>

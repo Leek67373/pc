@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MyTest</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="jquery-1.12.4.min.js"></script>
+    <style>
+        .loading {
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -50px;
+            margin-top: -15px; 
+            background: red;  
+            color: #fff;
+            border-radius: 5px;
+            /* border: 1px solid #ddd; */
+        }
+
+        dot-a {
+            display: inline-block;
+            height: 1em;
+            line-height: 1;
+            text-align: left;
+            vertical-align: -.25ex;
+            overflow: hidden;
+        }
+
+        dot-a::before {
+            display: block;
+            content: '...\A..\A.';
+            white-space: pre-wrap;
+			animation: dot1 3s infinite step-start both; 
+        }
+
+        @keyframes dot1 {
+            33% {
+                transform: translateY(-2em);
+            }
+
+            66% {
+                transform: translateY(-1em);
+            }
+        }
+
+        @-webkit-keyframes dot1 {
+            33% {
+                transform: translateY(-2em);
+            }
+
+            66% {
+                transform: translateY(-1em);
+            }
+        }
+
+        @-ms-keyframes dot1 {
+            33% {
+                transform: translateY(-2em);
+            }
+
+            66% {
+                transform: translateY(-1em);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <object classid="clsid:3FD70033-70C9-465C-BA40-EB358BF4E148" width="1" height="1" id="myActiveObj">
+    </object>
+    <br />
+    Press ESC to stop, otherwise exit over 20 seconds;<br />
+    Return values explain:<br />
+    correct: image base64 string<br />
+    -1: cannot open camera<br />
+    -2: cannot find model.xml file in paths <br />
+    -3: init library failed<br />
+    -4: detect over time<br />
+    <br />
+    <input name="SetCamera" type="button" id="setCam" value="SetCam" onClick="SetCamera();" /><br /><br />
+    <input name="doTest" type="button" id="detect" value="Detect" onClick="doDetect();" /><br /><br />
+	<input name="doClose" type="button" id="close" value="Close" onClick="doClose();" /><br /><br />
+    Result:<br />
+    <img id="result" src="" alt=""><br />
+    <textarea id="data1" cols="150" rows="50"></textarea>
+</body>
+<script>
+
+    var result;
+
+    var loading = (function () {
+        var $loading = $('<div class="loading" style="display: none" >检测中<dot-a>...</dot-a></div>');
+        $loading.appendTo('body');
+        function show() {
+            $loading.show();
+        }
+        function hide() {
+            $loading.hide();
+        }
+        return {
+            show: show,
+            hide: hide
+        }
+    })();
+
+    var loop = (function () {
+        var loopTime;
+        function loop(fn, timeout) {
+            timeout = timeout || (1000 / 60)
+            return setInterval(function () {
+                typeof fn === 'function' && fn()
+            }, timeout);
+        }
+        function start(fn) {
+            stop(loopTime)
+            loopTime = loop(function () {
+                typeof fn === 'function' && fn()
+            }, 1000 / 60)
+        }
+        function stop() {
+            loopTime && clearInterval(loopTime);
+        }
+        return {
+            start: start,
+            stop: stop
+        }
+    })();
+
+	function check(jsonStr) {
+		var activex = document.getElementById('myActiveObj');
+		
+		var data = {}
+		try{
+			data = JSON.parse(jsonStr)
+		}catch(e) {}
+		console.log(data)
+		document.getElementById("data1").value = jsonStr;
+		if(data.code == '0') {
+			loading.show();
+			console.time('begin')
+			console.log('begin1')
+			setTimeout(function() {
+				var res = activex.GetMsg && activex.GetMsg() || '{}';
+				console.timeEnd('begin')
+				console.log('begin2')
+				
+				var checkData = JSON.parse(res);
+				document.getElementById("data1").value = res;
+				if(checkData.code == '0'){
+				    setImg(checkData.image);
+			    }
+				loading.hide();
+			}, 50)
+		}
+	}
+
+    function doDetect() {
+        //var width = window.innerWidth;
+        //var height = window.innerHeight;
+        var width = screen.width;
+        var height = screen.height;
+        var rt = window.devicePixelRatio || 1;
+        var xl = 732;
+        var yl = 554;
+        var x = (width * rt - xl) / 2;
+        var y = (height * rt - yl) / 2;
+        var MyClock = document.getElementById("myActiveObj");
+        result = MyClock.detectWithPosition(x, y, xl, yl, 3);
+		check(result);
+    }
+
+    function doClose() {
+        var delay = 1;
+        //var result= myActiveObj.doConsole(delay); 
+        var result = myActiveObj.doConsole(delay);
+        document.getElementById("data1").innerHTML = result;
+		setImg('');
+    }
+    function SetCamera() {
+        var index = 0;
+        var result = myActiveObj.CheckCamera(index);
+        document.getElementById("data1").innerHTML = result;
+        //var index = 0;    
+        //myActiveObj.SetCamera(index); 
+    }
+
+
+    function setImg(base64) {
+        document.getElementById('result').setAttribute('src', 'data:image/png;base64,' + base64)
+    }
+
+
+
+</script>
+
+</html>

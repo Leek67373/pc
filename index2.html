@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width" initial-scale="1" />
+    <title>待遇资格认证</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body id="bady">
+<div class="pc-box_mian" id="error2">
+    <div class="error-box_mian_top certified_top"></div>
+    <div class="fail-box_mian_middle certified_mid">
+        <p>已认证</p>
+        <div class="errorText certified_mid_text">您已完成待遇资格认证<br>请于下一年度再进行待遇资格认证</div>
+    </div>
+    <div class="fail-box_mian_button again handle certified_mid_button">返回</div>
+</div>
+</body>
+
+<script type="text/javascript" src="js/jquery.min.js" charset="utf-8" ></script>
+<script>
+    // 返回上一页 
+    $('.certified_mid_button').on('click', function () {
+        // history.go(-2)
+        // 
+        window.close()
+    })
+
+</script>
+</html>
